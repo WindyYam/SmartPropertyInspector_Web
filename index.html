@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>360 Spherical Inspection Viewer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <button id="toggleUiBtn" class="toggle-ui-btn" type="button" aria-pressed="false">
+      Hide UI
+    </button>
+
+    <main class="viewer-wrap">
+      <canvas id="viewerCanvas" aria-label="Spherical image canvas"></canvas>
+
+      <aside id="uiOverlay" class="control-panel" aria-label="Viewer controls">
+        <h1 class="panel-title">SmartProperty Demo</h1>
+        <div class="upload-row">
+          <label class="upload-btn" for="imageInput">
+            Upload Image
+            <input id="imageInput" type="file" accept="image/jpeg,image/jpg,image/png" multiple />
+          </label>
+          <button id="openInspectionInfoBtn" class="info-btn" type="button" aria-label="Open inspection info">
+            ℹ
+          </button>
+        </div>
+
+        <section class="portal-wrap" aria-label="Node and portal links">
+          <div class="portal-head">
+            <h2 class="list-title">Node Portals</h2>
+            <div class="portal-head-actions">
+              <button id="placeTagBtn" class="place-tag-btn" type="button" aria-label="Place tag" title="Place tag">🏷</button>
+              <button id="placeNodeBtn" class="place-portal-btn" type="button" aria-label="Place portal" title="Place portal">🌀</button>
+            </div>
+          </div>
+          <p id="nodeHint" class="portal-hint">Upload images to create nodes, then select a node to view its panorama.</p>
+          <ul id="nodeList" class="portal-list">
+            <li class="image-list-empty">Upload images to create nodes</li>
+          </ul>
+        </section>
+      </aside>
+
+      <div id="overlayMessage" class="overlay-message hidden">
+        <strong>No image loaded.</strong>
+        <span>Select a 360 equirectangular image to start.</span>
+      </div>
+
+      <div id="tagImageModal" class="tag-image-modal hidden" aria-hidden="true">
+        <div id="tagImageBackdrop" class="tag-image-backdrop"></div>
+        <section class="tag-image-dialog" role="dialog" aria-modal="true" aria-labelledby="tagImageTitle">
+          <div class="tag-image-head">
+            <h2 id="tagImageTitle" class="tag-image-title">Tag image</h2>
+            <button id="closeTagImageModalBtn" type="button" class="tag-image-close-btn" aria-label="Close enlarged tag image">Close</button>
+          </div>
+          <img id="tagImageLarge" class="tag-image-large" src="" alt="Enlarged tag image" title="Click to change image" />
+          <input id="tagImageFileInput" type="file" accept="image/*" class="tag-image-file-input" />
+
+          <form id="tagInfoForm" class="tag-info-form" novalidate>
+            <section class="tag-info-section">
+              <h3>Classification</h3>
+              <div class="tag-info-grid">
+                <label class="tag-info-field">
+                  <span>Floor</span>
+                  <input id="tagInfoFloor" name="floor" type="text" readonly />
+                </label>
+                <label class="tag-info-field">
+                  <span>Room Label</span>
+                  <input id="tagInfoRoomLabel" name="room_label" type="text" />
+                </label>
+                <label class="tag-info-field">
+                  <span>Component</span>
+                  <select id="tagInfoComponent" name="component">
+                    <option value="">Select component</option>
+                    <option value="Roof">Roof</option>
+                    <option value="External walls">External walls</option>
+                    <option value="Windows &amp; doors">Windows &amp; doors</option>
+                    <option value="Internal walls &amp; ceilings">Internal walls &amp; ceilings</option>
+                    <option value="Flooring">Flooring</option>
+                    <option value="Plumbing">Plumbing</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="HVAC">HVAC</option>
+                    <option value="Hot water system">Hot water system</option>
+                    <option value="Structural">Structural</option>
+                    <option value="Fire safety">Fire safety</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </label>
+                <label class="tag-info-field">
+                  <span>Finding Type</span>
+                  <select id="tagInfoFindingType" name="finding_type">
+                    <option value="">Select finding type</option>
+                    <option value="Damage">Damage</option>
+                    <option value="Fault">Fault</option>
+                    <option value="Safety hazard">Safety hazard</option>
+                    <option value="Depreciating asset">Depreciating asset</option>
+                    <option value="Maintenance required">Maintenance required</option>
+                  </select>
+                </label>
+              </div>
+            </section>
+
+            <section class="tag-info-section">
+              <h3>Description</h3>
+              <div class="tag-info-grid">
+                <label class="tag-info-field tag-info-field-full"><span>Description</span><textarea id="tagInfoDescription" name="description" rows="3"></textarea></label>
+                <label class="tag-info-field">
+                  <span>Severity</span>
+                  <select id="tagInfoSeverity" name="severity">
+                    <option value="">Select severity</option>
+                    <option value="Critical">Critical</option>
+                    <option value="Major">Major</option>
+                    <option value="Minor">Minor</option>
+                    <option value="Cosmetic">Cosmetic</option>
+                  </select>
+                </label>
+                <label class="tag-info-field">
+                  <span>Priority</span>
+                  <select id="tagInfoPriority" name="priority">
+                    <option value="">Select priority</option>
+                    <option value="Immediate">Immediate</option>
+                    <option value="Short-term (0-3 months)">Short-term (0-3 months)</option>
+                    <option value="Medium-term (3-12 months)">Medium-term (3-12 months)</option>
+                    <option value="Long-term (12+ months)">Long-term (12+ months)</option>
+                    <option value="Monitor only">Monitor only</option>
+                  </select>
+                </label>
+                <label class="tag-info-field tag-info-field-full">
+                  <span>Likely Cause</span>
+                  <input id="tagInfoLikelyCause" name="likely_cause" type="text" list="likelyCauseSuggestions" />
+                </label>
+                <datalist id="likelyCauseSuggestions">
+                  <option value="Water ingress"></option>
+                  <option value="Age-related wear"></option>
+                  <option value="Poor installation"></option>
+                  <option value="Impact damage"></option>
+                  <option value="Corrosion"></option>
+                  <option value="Material fatigue"></option>
+                </datalist>
+              </div>
+            </section>
+
+            <section class="tag-info-section">
+              <h3>Action</h3>
+              <div class="tag-info-grid">
+                <label class="tag-info-field tag-info-field-full">
+                  <span>Recommended Action</span>
+                  <select id="tagInfoRecommendedAction" name="recommended_action">
+                    <option value="">Select action</option>
+                    <option value="Repair">Repair</option>
+                    <option value="Replace">Replace</option>
+                    <option value="Monitor">Monitor</option>
+                    <option value="Investigate further">Investigate further</option>
+                  </select>
+                </label>
+                <label class="tag-info-field">
+                  <span>Trade Required</span>
+                  <select id="tagInfoTradeRequired" name="trade_required">
+                    <option value="">Select trade</option>
+                    <option value="Plumber">Plumber</option>
+                    <option value="Electrician">Electrician</option>
+                    <option value="Carpenter">Carpenter</option>
+                    <option value="Roofer">Roofer</option>
+                    <option value="HVAC technician">HVAC technician</option>
+                    <option value="Structural engineer">Structural engineer</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </label>
+              </div>
+            </section>
+
+            <section class="tag-info-section">
+              <h3>Cost &amp; Lifecycle</h3>
+              <div class="tag-info-grid">
+                <label id="tagInfoEstimatedCostField" class="tag-info-field"><span>Estimated Cost</span><input id="tagInfoEstimatedCost" name="estimated_cost" type="text" /></label>
+                <label id="tagInfoExpectedUsefulLifeYearsField" class="tag-info-field"><span>Expected Useful Life (Years)</span><input id="tagInfoExpectedUsefulLifeYears" name="expected_useful_life_years" type="number" min="0" step="1" /></label>
+                <label id="tagInfoRemainingUsefulLifeYearsField" class="tag-info-field"><span>Remaining Useful Life (Years)</span><input id="tagInfoRemainingUsefulLifeYears" name="remaining_useful_life_years" type="number" min="0" step="1" /></label>
+                <label id="tagInfoEstimatedReplacementCostField" class="tag-info-field"><span>Estimated Replacement Cost</span><input id="tagInfoEstimatedReplacementCost" name="estimated_replacement_cost" type="text" /></label>
+              </div>
+            </section>
+
+            <section class="tag-info-section">
+              <h3>Evidence</h3>
+              <div class="tag-info-grid">
+                <label class="tag-info-field"><span>Closeup Photo</span><input id="tagInfoCloseupPhoto" name="closeup_photo" type="text" placeholder="Reference or URL" required /></label>
+                <label class="tag-info-field tag-info-field-full"><span>Additional Photos</span><textarea id="tagInfoAdditionalPhotos" name="additional_photos" rows="2" placeholder="Comma-separated references or notes"></textarea></label>
+              </div>
+            </section>
+
+            <section class="tag-info-section">
+              <h3>Status</h3>
+              <div class="tag-info-grid">
+                <label class="tag-info-field"><span>Status</span>
+                  <select id="tagInfoStatus" name="status">
+                    <option value="">Select status</option>
+                    <option value="Open">Open</option>
+                    <option value="Acknowledged">Acknowledged</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                    <option value="Deferred">Deferred</option>
+                  </select>
+                </label>
+              </div>
+            </section>
+
+            <div class="tag-info-actions">
+              <button id="resetTagInfoBtn" class="tag-info-secondary-btn" type="button">Reset</button>
+              <button id="saveTagInfoBtn" class="tag-info-primary-btn" type="submit">Save</button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <div id="inspectionInfoModal" class="inspection-info-modal hidden" aria-hidden="true">
+        <div id="inspectionInfoBackdrop" class="inspection-info-backdrop"></div>
+        <section class="inspection-info-dialog" role="dialog" aria-modal="true" aria-labelledby="inspectionInfoTitle">
+          <div class="inspection-info-head">
+            <h2 id="inspectionInfoTitle" class="inspection-info-title">Inspection Information</h2>
+            <button id="closeInspectionInfoBtn" type="button" class="inspection-info-close-btn" aria-label="Close inspection information">Close</button>
+          </div>
+
+          <form id="inspectionInfoForm" class="inspection-info-form" novalidate>
+            <label class="inspection-field">
+              <span>Property Address</span>
+              <input id="propertyAddressInput" name="property_address" type="text" />
+            </label>
+
+            <label class="inspection-field">
+              <span>Inspection Date</span>
+              <input id="inspectionDateInput" name="inspection_date" type="date" />
+            </label>
+
+            <label class="inspection-field">
+              <span>Inspector Name</span>
+              <input id="inspectorNameInput" name="inspector_name" type="text" />
+            </label>
+
+            <label class="inspection-field">
+              <span>Property Type</span>
+              <select id="propertyTypeInput" name="property_type">
+                <option value="">Select property type</option>
+                <option value="Residential">Residential</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Industrial">Industrial</option>
+                <option value="Civil infrastructure">Civil infrastructure</option>
+              </select>
+            </label>
+
+            <label class="inspection-field">
+              <span>Client Name</span>
+              <input id="clientNameInput" name="client_name" type="text" placeholder="" />
+            </label>
+
+            <label class="inspection-field">
+              <span>Inspection Purpose</span>
+              <select id="inspectionPurposeInput" name="inspection_purpose">
+                <option value="">Select inspection purpose</option>
+                <option value="Pre-purchase">Pre-purchase</option>
+                <option value="Condition report">Condition report</option>
+                <option value="Defects liability period">Defects liability period</option>
+                <option value="Insurance">Insurance</option>
+                <option value="Routine asset audit">Routine asset audit</option>
+                <option value="Handover">Handover</option>
+              </select>
+            </label>
+
+            <label class="inspection-field">
+              <span>Floor Count</span>
+              <input id="floorCountInput" name="floor_count" type="number" min="0" step="1" placeholder="" />
+            </label>
+
+            <label class="inspection-field inspection-field-full">
+              <span>Summary Notes</span>
+              <textarea
+                id="summaryNotesInput"
+                name="summary_notes"
+                rows="4"
+                placeholder=""
+              ></textarea>
+            </label>
+
+            <div class="inspection-info-actions">
+              <button id="resetInspectionInfoBtn" class="inspection-info-secondary-btn" type="button">Reset</button>
+              <button id="saveInspectionInfoBtn" class="inspection-info-primary-btn" type="submit">Save</button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+    </main>
+
+    <script type="module" src="assets/js/app.bundle.js"></script>
+  </body>
+</html>
