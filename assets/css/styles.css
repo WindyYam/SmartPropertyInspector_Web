@@ -61,11 +61,48 @@ h1 {
   color: #1d3040;
 }
 
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.title-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .upload-row {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 6px;
   align-items: center;
+}
+
+.bundle-btn {
+  border: 1px solid #bfd3e0;
+  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #18394a;
+  background: #f4faff;
+  cursor: pointer;
+}
+
+.bundle-btn:hover {
+  background: #e5f4ff;
+}
+
+.bundle-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .upload-btn {
@@ -665,6 +702,48 @@ h1 {
   display: none;
 }
 
+.tag-image-source-chooser {
+  position: absolute;
+  top: 62px;
+  right: 16px;
+  z-index: 2;
+  border: 1px solid #bfd3e0;
+  border-radius: 10px;
+  background: #f8fcff;
+  box-shadow: 0 14px 28px #00000033;
+  padding: 8px;
+  display: grid;
+  gap: 6px;
+  width: min(220px, calc(100vw - 80px));
+}
+
+.tag-image-source-chooser.hidden {
+  display: none;
+}
+
+.tag-image-source-btn,
+.tag-image-source-cancel-btn {
+  width: 100%;
+  border: 1px solid #bfd3e0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 0.78rem;
+  text-align: left;
+  color: #1a3a4b;
+  background: #f4faff;
+  cursor: pointer;
+}
+
+.tag-image-source-btn:hover,
+.tag-image-source-cancel-btn:hover {
+  background: #e5f4ff;
+}
+
+.tag-image-source-cancel-btn {
+  text-align: center;
+}
+
 .inspection-info-modal {
   position: absolute;
   inset: 0;
@@ -947,4 +1026,196 @@ body.ui-hidden .control-panel {
   .tag-info-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Dark glass theme overrides */
+:root {
+  --ink: #e8ecff;
+  --line: #39415f;
+  --panel-glass: rgba(10, 14, 27, 0.62);
+  --card-glass: rgba(20, 27, 46, 0.58);
+  --field-glass: rgba(14, 20, 36, 0.72);
+  --accent: #63e6ff;
+  --accent-2: #8e9dff;
+}
+
+body {
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 12% 8%, rgba(141, 169, 255, 0.27), transparent 34%),
+    radial-gradient(circle at 92% 12%, rgba(99, 230, 255, 0.18), transparent 30%),
+    radial-gradient(circle at 68% 88%, rgba(255, 130, 220, 0.16), transparent 36%),
+    linear-gradient(140deg, #070b16 0%, #0c1325 40%, #0a1122 100%);
+}
+
+.control-panel {
+  border-color: rgba(131, 149, 219, 0.35);
+  background: var(--panel-glass);
+  backdrop-filter: blur(14px) saturate(130%);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(236, 243, 255, 0.12);
+}
+
+.panel-title,
+.list-title,
+.portal-name,
+.tag-info-section h3,
+.inspection-info-title,
+.tag-image-title,
+.inspection-field span,
+.tag-info-field span,
+.portal-hint,
+.image-list-empty,
+.node-level-value {
+  color: #d9e3ff;
+}
+
+.upload-btn {
+  border-color: rgba(113, 226, 255, 0.6);
+  background: linear-gradient(160deg, rgba(87, 211, 255, 0.3), rgba(123, 131, 255, 0.3));
+  color: #ebf8ff;
+  box-shadow: 0 8px 26px rgba(76, 143, 255, 0.28);
+}
+
+.upload-btn:hover {
+  box-shadow: 0 12px 30px rgba(87, 211, 255, 0.4);
+}
+
+.info-btn,
+.bundle-btn,
+.node-view-btn,
+.tag-info-btn,
+.portal-delete-btn,
+.inspection-info-close-btn,
+.inspection-info-secondary-btn,
+.inspection-info-primary-btn,
+.tag-info-secondary-btn,
+.tag-info-primary-btn,
+.tag-image-close-btn,
+.tag-image-source-btn,
+.tag-image-source-cancel-btn,
+.node-level-btn,
+.toggle-ui-btn {
+  border-color: rgba(139, 164, 255, 0.42);
+  color: #e8edff;
+  background: linear-gradient(160deg, rgba(96, 118, 199, 0.34), rgba(57, 75, 136, 0.34));
+}
+
+.info-btn:hover,
+.bundle-btn:hover,
+.node-view-btn:hover,
+.tag-info-btn:hover,
+.portal-delete-btn:hover,
+.inspection-info-close-btn:hover,
+.inspection-info-secondary-btn:hover,
+.inspection-info-primary-btn:hover,
+.tag-info-secondary-btn:hover,
+.tag-info-primary-btn:hover,
+.tag-image-close-btn:hover,
+.tag-image-source-btn:hover,
+.tag-image-source-cancel-btn:hover,
+.node-level-btn:hover,
+.toggle-ui-btn:hover {
+  background: linear-gradient(160deg, rgba(116, 142, 235, 0.46), rgba(74, 97, 173, 0.44));
+}
+
+.inspection-info-primary-btn,
+.tag-info-primary-btn {
+  border-color: rgba(99, 230, 255, 0.62);
+  background: linear-gradient(160deg, rgba(80, 222, 255, 0.34), rgba(91, 123, 248, 0.4));
+}
+
+.image-list-wrap,
+.portal-wrap,
+.portal-item,
+.tag-item,
+.tag-info-section,
+.inspection-info-dialog,
+.tag-image-dialog,
+.node-level-stepper,
+.image-list-item,
+.level-toggle,
+.portal-label-input,
+.portal-target-select,
+.inspection-field input,
+.inspection-field select,
+.inspection-field textarea,
+.tag-info-field input,
+.tag-info-field select,
+.tag-info-field textarea {
+  border-color: rgba(139, 164, 255, 0.34);
+  background: var(--card-glass);
+  color: #e8ecff;
+}
+
+.image-list-item:hover,
+.level-toggle.level-parent,
+.node-toggle,
+.tag-section {
+  background: rgba(38, 49, 86, 0.48);
+}
+
+.image-list-item.active,
+.level-toggle.active-node {
+  border-color: rgba(99, 230, 255, 0.66);
+  background: linear-gradient(160deg, rgba(83, 217, 255, 0.27), rgba(105, 119, 255, 0.28));
+  color: #f2fbff;
+}
+
+.level-toggle,
+.level-toggle.level-parent,
+.level-toggle.collapsed {
+  color: #e4ecff;
+}
+
+.portal-label-input,
+.portal-target-select,
+.inspection-field input,
+.inspection-field select,
+.inspection-field textarea,
+.tag-info-field input,
+.tag-info-field select,
+.tag-info-field textarea {
+  background: var(--field-glass);
+}
+
+.portal-label-input:focus,
+.inspection-field input:focus,
+.inspection-field select:focus,
+.inspection-field textarea:focus,
+.tag-info-field input:focus,
+.tag-info-field select:focus,
+.tag-info-field textarea:focus,
+.portal-target-select:focus {
+  outline: 2px solid rgba(99, 230, 255, 0.58);
+  outline-offset: 1px;
+}
+
+.tag-image-large {
+  background: #050811;
+}
+
+.overlay-message strong,
+.overlay-message span {
+  color: #f2f7ff;
+  background: rgba(8, 12, 23, 0.7);
+  border: 1px solid rgba(139, 164, 255, 0.28);
+}
+
+.image-list-empty {
+  border-color: rgba(139, 164, 255, 0.34);
+  background: rgba(17, 24, 43, 0.38);
+}
+
+.inspection-info-backdrop,
+.tag-image-backdrop {
+  background: rgba(1, 3, 10, 0.78);
+}
+
+.toggle-ui-btn {
+  background: rgba(12, 18, 33, 0.8);
+  border-color: rgba(139, 164, 255, 0.42);
+}
+
+.tag-preview-thumb {
+  border-color: rgba(139, 164, 255, 0.34);
 }

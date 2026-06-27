@@ -21,15 +21,22 @@
       <canvas id="viewerCanvas" aria-label="Spherical image canvas"></canvas>
 
       <aside id="uiOverlay" class="control-panel" aria-label="Viewer controls">
-        <h1 class="panel-title">SmartProperty Demo</h1>
+        <div class="panel-head">
+          <h1 class="panel-title">SmartProperty Demo</h1>
+          <div class="title-actions">
+            <button id="importBundleBtn" class="bundle-btn" type="button" aria-label="Import scene bundle" title="Import scene bundle">📥</button>
+            <button id="exportBundleBtn" class="bundle-btn" type="button" aria-label="Export scene bundle" title="Export scene bundle">💾</button>
+          </div>
+        </div>
         <div class="upload-row">
           <label class="upload-btn" for="imageInput">
             Upload Image
-            <input id="imageInput" type="file" accept="image/jpeg,image/jpg,image/png" multiple />
+            <input id="imageInput" type="file" accept="image/*,.heic,.heif" multiple />
           </label>
           <button id="openInspectionInfoBtn" class="info-btn" type="button" aria-label="Open inspection info">
             ℹ
           </button>
+          <input id="importBundleInput" type="file" accept=".zip,application/zip" hidden />
         </div>
 
         <section class="portal-wrap" aria-label="Node and portal links">
@@ -60,7 +67,13 @@
             <button id="closeTagImageModalBtn" type="button" class="tag-image-close-btn" aria-label="Close enlarged tag image">Close</button>
           </div>
           <img id="tagImageLarge" class="tag-image-large" src="" alt="Enlarged tag image" title="Click to change image" />
+          <div id="tagImageSourceChooser" class="tag-image-source-chooser hidden" aria-hidden="true">
+            <button id="chooseTagImageFileBtn" type="button" class="tag-image-source-btn">Upload file</button>
+            <button id="chooseTagImageCameraBtn" type="button" class="tag-image-source-btn">Take photo</button>
+            <button id="cancelTagImageSourceBtn" type="button" class="tag-image-source-cancel-btn">Cancel</button>
+          </div>
           <input id="tagImageFileInput" type="file" accept="image/*" class="tag-image-file-input" />
+          <input id="tagImageCameraInput" type="file" accept="image/*" capture="environment" class="tag-image-file-input" />
 
           <form id="tagInfoForm" class="tag-info-form" novalidate>
             <section class="tag-info-section">
